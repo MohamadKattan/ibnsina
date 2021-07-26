@@ -19,7 +19,7 @@ Widget customTextField({
     width: _width,
     decoration: BoxDecoration(
       color: Color(0xffA3E29F),
-      borderRadius: BorderRadius.circular(4.0),
+      borderRadius: BorderRadius.circular(8.0),
       boxShadow: [
         BoxShadow(
             color: Color(0xffCFF3CB),
@@ -37,7 +37,6 @@ Widget customTextField({
         maxLines: maxLines,
         minLines: minLines,
         controller: controller,
-        cursorColor: cursorColor,
         style: TextStyle(color: Colors.black, fontSize: 16.0),
         keyboardType: keyboardType,
         decoration: InputDecoration(

@@ -57,6 +57,9 @@ flutter:
   assets:
     - images/background.png
     - images/splash.png
+    - images/kid.png
+    - images/phoneiconn.png
+    - images/women.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

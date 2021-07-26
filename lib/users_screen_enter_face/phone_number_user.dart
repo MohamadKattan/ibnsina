@@ -53,10 +53,17 @@ class PhoneNo extends StatelessWidget {
                           ? circularCountDownTimer(context)
                           : Padding(
                               padding: EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.phonelink_sharp,
-                                size: 150,
-                                color: Color(0xff4A60AF),
+                              child: Container(
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                    color: Color(0xffCFF3CB),
+                                    shape: BoxShape.circle),
+                                child: Image.asset(
+                                  "images/phoneiconn.png",
+                                  height: 130.0,
+                                  width: 150.0,
+                                ),
                               ),
                             ),
                       Container(
@@ -70,7 +77,6 @@ class PhoneNo extends StatelessWidget {
                           context: context,
                           controller: phone,
                           autofocus: false,
-                          cursorColor: Colors.blueAccent,
                           obscureText: false,
                           maxLines: 1,
                           minLines: 1,
@@ -83,7 +89,7 @@ class PhoneNo extends StatelessWidget {
                         child: Column(
                           children: [
                             GestureDetector(
-                              onTap: (){
+                              onTap: () {
                                 checkTextfeild(context);
                               },
                               child: Container(
@@ -93,12 +99,16 @@ class PhoneNo extends StatelessWidget {
                                     100,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(8.0),
-                                    color:isWrong.isWrong==false?Color(0xff4A60AF):Colors.red,),
+                                    color: isWrong.isWrong == true
+                                        ? Colors.red
+                                        : Color(0xff4A60AF)),
                                 child: Center(
                                   child: Text(
-                                    isWrong.isWrong==false? "Login":"Try again",
+                                    isWrong.isWrong == true
+                                        ? "Try again"
+                                        : "Login",
                                     style: TextStyle(
-                                        color:Color(0xffCFF3CB),
+                                        color: Color(0xffCFF3CB),
                                         fontSize: 18.0,
                                         fontWeight: FontWeight.bold),
                                   ),
@@ -127,6 +137,7 @@ class PhoneNo extends StatelessWidget {
         duration: Duration(seconds: 5),
       ));
     } else {
+      Provider.of<BoolIngProvider>(context, listen: false).isWrongV(false);
       Provider.of<BoolIngProvider>(context, listen: false).isTrueOrNot(true);
       _service.signInByPhone(phone.text.trim(), context);
     }

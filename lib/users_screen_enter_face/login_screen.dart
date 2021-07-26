@@ -60,7 +60,6 @@ class LogInScreen extends StatelessWidget {
                           context: context,
                           controller: _emailController,
                           autofocus: false,
-                          cursorColor: Colors.blueAccent,
                           obscureText: false),
                     ),
                     SizedBox(
@@ -77,7 +76,6 @@ class LogInScreen extends StatelessWidget {
                         context: context,
                         controller: _passWordController,
                         autofocus: false,
-                        cursorColor: Colors.blueAccent,
                         obscureText: true,
                         maxLines: 1,
                         minLines: 1,

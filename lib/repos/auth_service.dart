@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ibnsina/provider/booling_provider.dart';
+import 'package:ibnsina/provider/doble_value.dart';
 import 'package:ibnsina/users_screen_enter_face/home_screen.dart';
+import 'package:ibnsina/users_screen_enter_face/login_screen.dart';
 import 'package:ibnsina/wifgets/custom_textfeild.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +17,12 @@ class AuthService {
   User currentUser;
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore fireStore = FirebaseFirestore.instance;
-  CollectionReference usersReference = FirebaseFirestore.instance.collection('users');
+  CollectionReference usersReference =
+      FirebaseFirestore.instance.collection('users');
   final TextEditingController code = TextEditingController();
 
-  Future<void> startCreateUserWithEmailAndPassword(String name, String email, String password, BuildContext context) async {
+  Future<void> startCreateUserWithEmailAndPassword(
+      String name, String email, String password, BuildContext context) async {
     try {
       await createUserWithEmailAndPassword(email, password)
           .whenComplete(() async {
@@ -36,7 +40,8 @@ class AuthService {
     }
   }
 
-  Future<void> startSignInWithEmailAndPassword(String email, String password, BuildContext context) async {
+  Future<void> startSignInWithEmailAndPassword(
+      String email, String password, BuildContext context) async {
     try {
       await signInWithEmailAndPassword(email, password).whenComplete(() async {
         if (signDon == true) {
@@ -51,7 +56,8 @@ class AuthService {
     }
   }
 
-  Future<void> createUserWithEmailAndPassword(String email, String password) async {
+  Future<void> createUserWithEmailAndPassword(
+      String email, String password) async {
     try {
       userCredential = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -85,7 +91,7 @@ class AuthService {
     }
   }
 
-  Future <UserCredential> signInWithGoogle(BuildContext context) async {
+  Future<UserCredential> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
@@ -97,7 +103,8 @@ class AuthService {
         idToken: googleAuth.idToken,
       );
 
-      userCredential = await auth.signInWithCredential(credential).whenComplete((){});
+      userCredential =
+          await auth.signInWithCredential(credential).whenComplete(() {});
       await getCurrentUser();
       pushNavigator(context);
     } catch (ex) {
@@ -116,100 +123,114 @@ class AuthService {
           Navigator.pop(context);
           userCredential = await auth.signInWithCredential(credential);
           await getCurrentUser();
-          Provider.of<BoolIngProvider>(context,listen: false).isWrongV(false);
-          if (userCredential.user != null){
-           return Navigator.push(
+          if (userCredential.user != null) {
+            return Navigator.push(
                 context, MaterialPageRoute(builder: (context) => HomeScreen()));
-
-          }else{ showError("Some Thing went wrong");}
+          } else {
+            showError("Some Thing went wrong");
+          }
         },
         verificationFailed: (FirebaseAuthException e) {
-            showError('The provided phone number is not valid.');
-            Provider.of<BoolIngProvider>(context,listen: false).isTrueOrNot(false);
-            Provider.of<BoolIngProvider>(context,listen: false).isWrongV(true);
+          showError('The provided phone number is not valid.');
+          Provider.of<BoolIngProvider>(context, listen: false)
+              .isTrueOrNot(false);
+          Provider.of<BoolIngProvider>(context, listen: false).isWrongV(true);
         },
         codeSent: (String verificationId, int resendToken) async {
           showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) {
-                return Positioned(
-                  bottom: 0.0,
-                  child: AlertDialog(
-                    content: Container(
-                      height: 80,
-                      width: MediaQuery.of(context).size.width*80/100,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("type a code"),
-                          Container(
-                            child: Expanded(
-                              flex: 1,
-                              child: Padding(
-                                padding:  EdgeInsets.only(top:8.0),
-                                child: customTextField(
-                                  keyboardType: TextInputType.visiblePassword,
-                                  hintText: "code",
-                                  icon: Icon(
-                                    Icons.vpn_key,
-                                    color: Colors.white,
-                                  ),
-                                  context: context,
-                                  controller: code,
-                                  autofocus: false,
-                                  cursorColor: Colors.blueAccent,
-                                  obscureText: false,
-                                  maxLines: 1,
-                                  minLines: 1,
+                return AlertDialog(
+                  content: Container(
+                    height: 80,
+                    width: MediaQuery.of(context).size.width * 80 / 100,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text("type a code"),
+                        Container(
+                          child: Expanded(
+                            flex: 1,
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 8.0),
+                              child: customTextField(
+                                keyboardType: TextInputType.visiblePassword,
+                                hintText: "code",
+                                icon: Icon(
+                                  Icons.vpn_key,
+                                  color: Colors.white,
                                 ),
+                                context: context,
+                                controller: code,
+                                autofocus: false,
+                                cursorColor: Colors.blueAccent,
+                                obscureText: false,
+                                maxLines: 1,
+                                minLines: 1,
                               ),
                             ),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    actions: [
-                      GestureDetector(
-                          onTap: () async {
-                            PhoneAuthCredential credential =
-                                PhoneAuthProvider.credential(
-                                    verificationId: verificationId,
-                                    smsCode: code.text.trim());
-                            userCredential =
-                                await auth.signInWithCredential(credential);
-                            await getCurrentUser();
-                            // await setToCloud(userCredential,name);
-                            if(userCredential.user!=null){
-                              return Navigator.push(
-                                context, MaterialPageRoute(builder: (context) => HomeScreen()));
-                            }else{showError("Some thing went wrong");}
-                          },
-                          child: Text("verification"))
-                    ],
                   ),
+                  actions: [
+                    GestureDetector(
+                        onTap: () async {
+                          PhoneAuthCredential credential =
+                              PhoneAuthProvider.credential(
+                                  verificationId: verificationId,
+                                  smsCode: code.text.trim());
+                          userCredential =
+                              await auth.signInWithCredential(credential);
+                          await getCurrentUser();
+                          // await setToCloud(userCredential,name);
+                          if (userCredential.user != null) {
+                            return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => HomeScreen()));
+                          } else {
+                            showError("Some thing went wrong");
+                          }
+                        },
+                        child: Text("verification"))
+                  ],
                 );
               });
         },
         codeAutoRetrievalTimeout: (String verificationId) async {
           showError(verificationId);
           showError("try again");
-          Provider.of<BoolIngProvider>(context,listen: false).isTrueOrNot(false);
-          Provider.of<BoolIngProvider>(context,listen: false).isWrongV(true);
+          Provider.of<BoolIngProvider>(context, listen: false)
+              .isTrueOrNot(false);
+          Provider.of<BoolIngProvider>(context, listen: false).isWrongV(true);
         },
       );
     } catch (ex) {
       showError(ex.toString());
-      Provider.of<BoolIngProvider>(context,listen: false).isTrueOrNot(false);
-      Provider.of<BoolIngProvider>(context,listen: false).isWrongV(true);
+      Provider.of<BoolIngProvider>(context, listen: false).isTrueOrNot(false);
+      Provider.of<BoolIngProvider>(context, listen: false).isWrongV(true);
     }
   }
 
-  Future<void> signOut() async {
-    await auth.signOut();
-    await GoogleSignIn().disconnect();
-    await GoogleSignIn().signOut();
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await auth.signOut();
+      await GoogleSignIn().disconnect();
+      await GoogleSignIn().signOut().whenComplete(() async {
+        await Provider.of<BoolIngProvider>(context, listen: false)
+            .isTrueOrNot(false);
+        Provider.of<DoubleProvider>(context, listen: false).value0Or1(0);
+      }).whenComplete(() => Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => LogInScreen()),
+          (route) => false));
+    } catch (ex) {
+      showError(ex.toString());
+    }
   }
 
   Future<void> deleteUser() async {
@@ -225,7 +246,7 @@ class AuthService {
 
   Future<User> getCurrentUser() async {
     try {
-      currentUser  = auth.currentUser;
+      currentUser = auth.currentUser;
 
       if (currentUser != null) {
         print(currentUser.uid);

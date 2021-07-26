@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ibnsina/bloc_auth/auth_bloc.dart';
 import 'package:ibnsina/provider/booling_provider.dart';
 import 'package:ibnsina/provider/circuler_provider.dart';
+import 'package:ibnsina/provider/doble_value.dart';
 import 'package:ibnsina/repos/auth_service.dart';
 import 'package:ibnsina/users_screen_enter_face/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => CircularProvider()),
         ChangeNotifierProvider(create: (context) => BoolIngProvider()),
+        ChangeNotifierProvider(create: (context) => DoubleProvider()),
       ],
       child: MaterialApp(
         title: "Ibn Sina",
