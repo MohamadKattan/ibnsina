@@ -2,12 +2,10 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:ibnsina/provider/booling_provider.dart';
 import 'package:ibnsina/provider/doble_value.dart';
-import 'package:ibnsina/repos/auth_service.dart';
 import 'package:ibnsina/wifgets/custom_drawer.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
-  final AuthService _authService = AuthService();
   @override
   Widget build(BuildContext context) {
     var value = Provider.of<DoubleProvider>(context).value;
